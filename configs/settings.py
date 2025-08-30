@@ -6,6 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 API_KEY = os.getenv("GOOGLE_API_KEY")
+STREETVIEW_API_URL = "https://maps.googleapis.com/maps/api/streetview"
 
 # Map generation parameters
 COUNTRIES_PATH = "data/external/countries.zip"
@@ -32,9 +33,17 @@ SPLIT_FOLDER_PATH = "data/intermediate/split_locations"
 SPLIT_LOCATIONS_PER_CELL = 100
 
 # Parameters for preparations of download batches
-DOWNLOAD_LOCATIONS_PATH = "data/intermediate/split_locations/split_0.json"
+DOWNLOAD_LOCATIONS_PATH = f"{SPLIT_FOLDER_PATH}/split_0.json"
 DOWNLOAD_BATCHES_PATH = "data/intermediate/download_batches"
 DOWNLOAD_IMAGES_PER_LOCATION = 5
 DOWNLOAD_VERTICAL_FOV = 84.85  # gives panorama 2200px wide, 79.9 would give 2400px wide panorama
 DOWNLOAD_BATCH_SIZE = 10_000
 DOWNLOAD_IMAGE_HEIGHT = 640
+
+# Batch download parameters
+DOWNLOAD_BATCH_FILE_PATH = f"{DOWNLOAD_BATCHES_PATH}/batch_0.json"
+DOWNLOAD_LOG_PATH = f"data/intermediate"
+DOWNLOAD_FOLDER_PATH = "data/raw"
+MAX_REQUESTS_PER_MINUTE = 25000
+CONCURRENT_DOWNLOADS = 1000
+CHUNK_SIZE = 16 * 1024

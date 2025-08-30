@@ -16,7 +16,7 @@ completed_cells = 0
 
 
 async def check_streetview_metadata(session, lat, lng, retries=3):
-    url = f"https://maps.googleapis.com/maps/api/streetview/metadata?key={API_KEY}&radius={RADIUS}&location={lat},{lng}"
+    url = f"{STREETVIEW_API_URL}/metadata?key={API_KEY}&radius={RADIUS}&location={lat},{lng}"
     for attempt in range(retries):
         try:
             async with limiter:
