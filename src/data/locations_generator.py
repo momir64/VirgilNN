@@ -1,28 +1,22 @@
-from configs.settings import API_KEY
 from aiolimiter import AsyncLimiter
 from shapely.geometry import Point
-import matplotlib.pyplot as plt
+from configs.settings import *
 import geopandas as gpd
 import numpy as np
 import asyncio
 import aiohttp
 import time
-
-europe = gpd.read_file("data/intermediate/europe.gpkg").to_crs("EPSG:4326")
-grid = gpd.read_file("data/intermediate/grid.gpkg").to_crs("EPSG:4326")
-REQUESTS_PER_SECOND = 500
-MAX_CONCURRENT_CELLS = 5
-LOCATIONS_PER_CELL = 300
-RADIUS = 1000  # 1 km
+import json
 
 limiter = AsyncLimiter(max_rate=REQUESTS_PER_SECOND, time_period=1)
 cell_semaphore = asyncio.Semaphore(MAX_CONCURRENT_CELLS)
+grid = gpd.read_file(GRID_PATH).to_crs("EPSG:4326")
 lock = asyncio.Lock()
 completed_cells = 0
 
 
-async def check_streetview_metadata(session, lat, lon, retries=3):
-    url = f"https://maps.googleapis.com/maps/api/streetview/metadata?key={API_KEY}&radius={RADIUS}&location={lat},{lon}"
+async def check_streetview_metadata(session, lat, lng, retries=3):
+    url = f"https://maps.googleapis.com/maps/api/streetview/metadata?key={API_KEY}&radius={RADIUS}&location={lat},{lng}"
     for attempt in range(retries):
         try:
             async with limiter:
@@ -44,19 +38,19 @@ async def generate_location(session, geom):
     minx, miny, maxx, maxy = geom.bounds
     while True:
         lat = np.random.uniform(miny, maxy)
-        lon = np.random.uniform(minx, maxx)
-        if geom.contains(Point(lon, lat)):
-            point = await check_streetview_metadata(session, lat, lon)
+        lng = np.random.uniform(minx, maxx)
+        if geom.contains(Point(lng, lat)):
+            point = await check_streetview_metadata(session, lat, lng)
             if point and geom.contains(point):
                 return point
 
 
 async def generate_locations_for_cell(session, cell, start_time, total_cells):
-    points = set()
-    while len(points) < LOCATIONS_PER_CELL:
-        tasks = [generate_location(session, cell['geometry']) for _ in range(LOCATIONS_PER_CELL - len(points))]
+    locations = set()
+    while len(locations) < LOCATIONS_PER_CELL:
+        tasks = [generate_location(session, cell['geometry']) for _ in range(LOCATIONS_PER_CELL - len(locations))]
         results = await asyncio.gather(*tasks)
-        points.update((point.x, point.y) for point in results)
+        locations.update((point.x, point.y) for point in results)
 
     # Logging
     async with lock:
@@ -64,28 +58,29 @@ async def generate_locations_for_cell(session, cell, start_time, total_cells):
         completed_cells += 1
         elapsed = time.perf_counter() - start_time
         eta = (total_cells - completed_cells) * (elapsed / completed_cells)
-        print(f"Cell {completed_cells} done. Generated {len(points) * completed_cells} points. "
+        print(f"Cell {completed_cells} done. Generated {len(locations) * completed_cells} locations. "
               f"Elapsed: {elapsed:.1f}s, ETA: {eta:.1f}s")
 
-    return [Point(lon, lat) for lon, lat in points]
+    return [{"lat": lat, "lng": lng} for lng, lat in locations]
 
 
-async def process_cell(cell, session, points, start_time, total_cells):
+async def process_cell(session, cell, start_time, total_cells, locations, cell_id):
     async with cell_semaphore:
-        cell_points = await generate_locations_for_cell(session, cell, start_time, total_cells)
+        cell_locations = await generate_locations_for_cell(session, cell, start_time, total_cells)
     async with lock:
-        points.extend(cell_points)
+        locations[cell_id] = cell_locations
 
 
 async def generate_locations():
-    points = []
+    locations = {}
     start_time = time.perf_counter()
     connector = aiohttp.TCPConnector(limit_per_host=MAX_CONCURRENT_CELLS * LOCATIONS_PER_CELL)
     async with aiohttp.ClientSession(connector=connector) as session:
-        tasks = [process_cell(cell, session, points, start_time, len(grid)) for idx, cell in grid.iterrows()]
+        tasks = [process_cell(session, cell, start_time, len(grid), locations, idx) for idx, cell in grid.iterrows()]
         await asyncio.gather(*tasks)
 
-    return points
+    return locations
+
 
 
 locations = asyncio.run(generate_locations())
