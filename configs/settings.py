@@ -12,7 +12,7 @@ COUNTRIES_PATH = "data/external/countries.zip"
 EUROPE_PATH = "data/intermediate/europe.gpkg"
 GRID_PATH = "data/intermediate/grid.gpkg"
 BOUNDARIES = (-25, 34, 35, 63.5)  # latitude and longitude degrees
-GRID_SIZE = 200_000  # 200.000 m = 200 km
+CELL_SIZE = 200_000  # 200.000 m = 200 km
 MIN_AREA = 1e10  # 1×10¹⁰ m² = 10_000 km²
 EXCLUDE_COUNTRIES = [
     "Belarus", "Bulgaria", "Estonia", "Finland",
@@ -27,6 +27,14 @@ MAX_CONCURRENT_CELLS = 5
 LOCATIONS_PER_CELL = 300
 RADIUS = 1000  # 1 km
 
-# Parameter for
+# Parameters for splitting locations
 SPLIT_FOLDER_PATH = "data/intermediate/split_locations"
-SPLIT_LOCATIONS_PER_CELL = 150
+SPLIT_LOCATIONS_PER_CELL = 100
+
+# Parameters for preparations of download batches
+DOWNLOAD_LOCATIONS_PATH = "data/intermediate/split_locations/split_0.json"
+DOWNLOAD_BATCHES_PATH = "data/intermediate/download_batches"
+DOWNLOAD_IMAGES_PER_LOCATION = 5
+DOWNLOAD_VERTICAL_FOV = 84.85  # gives panorama 2200px wide, 79.9 would give 2400px wide panorama
+DOWNLOAD_BATCH_SIZE = 10_000
+DOWNLOAD_IMAGE_HEIGHT = 640
