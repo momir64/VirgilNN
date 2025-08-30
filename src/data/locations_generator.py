@@ -48,7 +48,7 @@ async def generate_location(session, geom):
 async def generate_locations_for_cell(session, cell, start_time, total_cells):
     locations = set()
     while len(locations) < LOCATIONS_PER_CELL:
-        tasks = [generate_location(session, cell['geometry']) for _ in range(LOCATIONS_PER_CELL - len(locations))]
+        tasks = [generate_location(session, cell["geometry"]) for _ in range(LOCATIONS_PER_CELL - len(locations))]
         results = await asyncio.gather(*tasks)
         locations.update((point.x, point.y) for point in results)
 
