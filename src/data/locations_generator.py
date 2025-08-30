@@ -12,7 +12,7 @@ europe = gpd.read_file("data/visualization/europe.gpkg").to_crs("EPSG:4326")
 grid = gpd.read_file("data/visualization/grid.gpkg").to_crs("EPSG:4326")
 REQUESTS_PER_SECOND = 500
 MAX_CONCURRENT_CELLS = 5
-LOCATIONS_PER_CELL = 200
+LOCATIONS_PER_CELL = 300
 RADIUS = 1000  # 1 km
 
 limiter = AsyncLimiter(max_rate=REQUESTS_PER_SECOND, time_period=1)
@@ -52,8 +52,11 @@ async def generate_location(session, geom):
 
 
 async def generate_locations_for_cell(session, cell, start_time, total_cells):
-    tasks = [generate_location(session, cell['geometry']) for _ in range(LOCATIONS_PER_CELL)]
-    points = await asyncio.gather(*tasks)
+    points = set()
+    while len(points) < LOCATIONS_PER_CELL:
+        tasks = [generate_location(session, cell['geometry']) for _ in range(LOCATIONS_PER_CELL - len(points))]
+        results = await asyncio.gather(*tasks)
+        points.update((point.x, point.y) for point in results)
 
     # Logging
     async with lock:
@@ -64,7 +67,7 @@ async def generate_locations_for_cell(session, cell, start_time, total_cells):
         print(f"Cell {completed_cells} done. Generated {len(points) * completed_cells} points. "
               f"Elapsed: {elapsed:.1f}s, ETA: {eta:.1f}s")
 
-    return points
+    return [Point(lon, lat) for lon, lat in points]
 
 
 async def process_cell(cell, session, points, start_time, total_cells):
@@ -89,8 +92,9 @@ locations = asyncio.run(generate_locations())
 
 # todo: save locations somehow instead of displaying them
 points_gdf = gpd.GeoDataFrame(geometry=locations, crs=grid.crs)
-ax = europe.plot(figsize=(12, 10), color='lightgreen', edgecolor='black')
+ax = europe.plot(figsize=(9, 8), color='lightgreen', edgecolor='black')
 grid.boundary.plot(ax=ax, color='black', linewidth=0.5)
 points_gdf.plot(ax=ax, color='darkgreen', markersize=1)
 plt.title(f"Europe Grid Points ({len(locations)} points)")
+ax.set_aspect('auto')
 plt.show()
