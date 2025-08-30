@@ -51,7 +51,8 @@ async def main():
     with open(DOWNLOAD_BATCH_FILE_PATH) as file:
         requests = json.load(file)
 
-    log_path = f"{DOWNLOAD_LOG_PATH}/download_{DOWNLOAD_BATCH_FILE_PATH.split('/')[-1]}.log"
+    batch_name = os.path.splitext(os.path.basename(DOWNLOAD_BATCH_FILE_PATH.rstrip('/\\')))[0]
+    log_path = f"{DOWNLOAD_LOG_PATH}/download_{batch_name}.log"
     output_dir = f"{DOWNLOAD_FOLDER_PATH}/{requests[0]['total_cells']}"
     os.makedirs(os.path.dirname(log_path), exist_ok=True)
     os.makedirs(output_dir, exist_ok=True)
