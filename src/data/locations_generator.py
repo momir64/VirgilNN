@@ -82,14 +82,16 @@ async def generate_locations():
     return locations
 
 
+if __name__ == "__main__":
+    locations_per_cell = asyncio.run(generate_locations())
+    sorted_locations = dict(sorted(locations_per_cell.items()))
 
-locations = asyncio.run(generate_locations())
+    json_str = json.dumps(sorted_locations, indent=2)
+    json_str = json_str.replace('\n    {\n      ', '\n    {')
+    json_str = json_str.replace('\n    }', '}')
+    json_str = json_str.replace(',\n      ', ', ')
 
-# todo: save locations somehow instead of displaying them
-points_gdf = gpd.GeoDataFrame(geometry=locations, crs=grid.crs)
-ax = europe.plot(figsize=(9, 8), color='lightgreen', edgecolor='black')
-grid.boundary.plot(ax=ax, color='black', linewidth=0.5)
-points_gdf.plot(ax=ax, color='darkgreen', markersize=1)
-plt.title(f"Europe Grid Points ({len(locations)} points)")
-ax.set_aspect('auto')
-plt.show()
+    with open(ALL_LOCATIONS_PATH, "w") as file:
+        file.write(json_str)
+
+    print(f"Locations saved in {ALL_LOCATIONS_PATH}")
