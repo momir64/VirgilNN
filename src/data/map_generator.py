@@ -47,5 +47,5 @@ while len(small_idx) > 0:
     small_idx = grid[grid.area < MIN_AREA].index
 grid = grid.reset_index(drop=True)
 
-europe.to_file("data/visualization/europe.gpkg", layer="europe", driver="GPKG")
-grid.to_file("data/visualization/grid.gpkg", layer="grid", driver="GPKG")
+europe.to_file("data/intermediate/europe.gpkg", layer="europe", driver="GPKG")
+grid.to_file("data/intermediate/grid.gpkg", layer="grid", driver="GPKG")

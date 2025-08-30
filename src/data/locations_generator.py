@@ -8,8 +8,8 @@ import asyncio
 import aiohttp
 import time
 
-europe = gpd.read_file("data/visualization/europe.gpkg").to_crs("EPSG:4326")
-grid = gpd.read_file("data/visualization/grid.gpkg").to_crs("EPSG:4326")
+europe = gpd.read_file("data/intermediate/europe.gpkg").to_crs("EPSG:4326")
+grid = gpd.read_file("data/intermediate/grid.gpkg").to_crs("EPSG:4326")
 REQUESTS_PER_SECOND = 500
 MAX_CONCURRENT_CELLS = 5
 LOCATIONS_PER_CELL = 300
