@@ -1,3 +1,4 @@
+from src.data.utils import save_locations
 from aiolimiter import AsyncLimiter
 from shapely.geometry import Point
 from configs.settings import *
@@ -6,7 +7,6 @@ import numpy as np
 import asyncio
 import aiohttp
 import time
-import json
 
 limiter = AsyncLimiter(max_rate=REQUESTS_PER_SECOND, time_period=1)
 cell_semaphore = asyncio.Semaphore(MAX_CONCURRENT_CELLS)
@@ -84,14 +84,5 @@ async def generate_locations():
 
 if __name__ == "__main__":
     locations_per_cell = asyncio.run(generate_locations())
-    sorted_locations = dict(sorted(locations_per_cell.items()))
-
-    json_str = json.dumps(sorted_locations, indent=2)
-    json_str = json_str.replace('\n    {\n      ', '\n    {')
-    json_str = json_str.replace('\n    }', '}')
-    json_str = json_str.replace(',\n      ', ', ')
-
-    with open(ALL_LOCATIONS_PATH, "w") as file:
-        file.write(json_str)
-
+    save_locations(locations_per_cell, ALL_LOCATIONS_PATH)
     print(f"Locations saved in {ALL_LOCATIONS_PATH}")

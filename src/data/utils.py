@@ -1,0 +1,13 @@
+import json
+import os
+
+
+def save_locations(locations_per_cell: dict[str, dict[str, str]], file_path: str) -> None:
+    sorted_locations = dict(sorted(locations_per_cell.items()))
+    json_str = json.dumps(sorted_locations, indent=2)
+    json_str = json_str.replace('\n    {\n      ', '\n    {')
+    json_str = json_str.replace('\n    }', '}')
+    json_str = json_str.replace(',\n      ', ', ')
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    with open(file_path, "w") as file:
+        file.write(json_str)
