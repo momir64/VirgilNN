@@ -41,7 +41,7 @@ SPLIT_LOCATIONS_PER_CELL = 100
 DOWNLOAD_LOCATIONS_PATH = f"{SPLIT_FOLDER_PATH}/split_0.json"
 DOWNLOAD_BATCHES_PATH = "data/intermediate/download_batches"
 DOWNLOAD_IMAGES_PER_LOCATION = 5
-DOWNLOAD_VERTICAL_FOV = 84.85  # for height 640px, gives panorama wide 2200px, 79.9° would give 2400px wide panorama
+DOWNLOAD_VERTICAL_FOV = 82.3187  # for height 640px, gives panorama wide 2300px, 79.9° would give 2400px wide panorama
 DOWNLOAD_BATCH_SIZE = 10_000
 DOWNLOAD_IMAGE_HEIGHT = 640
 
