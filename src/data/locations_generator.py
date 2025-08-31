@@ -24,7 +24,10 @@ async def check_streetview_metadata(session, lat, lng, retries=3):
                     data = await resp.json()
             status = data.get("status", "UNKNOWN")
             if status == "OK" and "location" in data and "lng" in data["location"] and "lat" in data["location"]:
-                return Point(data["location"]["lng"], data["location"]["lat"])
+                if not USE_ONLY_MADE_BY_GOOGLE or ("copyright" in data and data["copyright"] == "© Google"):
+                    return Point(data["location"]["lng"], data["location"]["lat"])
+                else:
+                    return None
             elif status == "OVER_QUERY_LIMIT":
                 await asyncio.sleep(2 ** attempt)
             else:

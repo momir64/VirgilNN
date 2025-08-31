@@ -8,7 +8,7 @@ load_dotenv(BASE_DIR / ".env")
 API_KEY = os.getenv("GOOGLE_API_KEY")
 STREETVIEW_API_URL = "https://maps.googleapis.com/maps/api/streetview"
 
-# Map generation parameters
+# Parameters for generating the map
 COUNTRIES_PATH = "data/external/countries.zip"
 EUROPE_PATH = "data/intermediate/europe.gpkg"
 GRID_PATH = "data/intermediate/grid.gpkg"
@@ -20,15 +20,23 @@ EXCLUDE_COUNTRIES = [
     "Iceland", "Latvia", "Lithuania", "Moldova",
     "Poland", "Romania", "Russia", "Ukraine"
 ]
+# Without balkan
+# EXCLUDE_COUNTRIES = [
+#     "Albania", "Belarus", "Bosnia and Herz.", "Bulgaria", "Croatia",
+#     "Estonia", "Finland", "Greece", "Hungary", "Iceland", "Latvia",
+#     "Lithuania", "Moldova", "Montenegro", "North Macedonia", "Poland",
+#     "Romania", "Russia", "Serbia", "Slovakia", "Ukraine"
+# ]
 
-# Location generation parameters
+# Parameters for generating locations
 ALL_LOCATIONS_PATH = "data/intermediate/all_locations.json"
+USE_ONLY_MADE_BY_GOOGLE = True
 REQUESTS_PER_SECOND = 500
 MAX_CONCURRENT_CELLS = 5
 LOCATIONS_PER_CELL = 300
 RADIUS = 1000  # 1 km
 
-# Parameters for splitting locations
+# Parameters for splitting locations into defined number of samples per cell
 SPLIT_FOLDER_PATH = "data/intermediate/split_locations"
 SPLIT_LOCATIONS_PER_CELL = 100
 
@@ -36,11 +44,11 @@ SPLIT_LOCATIONS_PER_CELL = 100
 DOWNLOAD_LOCATIONS_PATH = f"{SPLIT_FOLDER_PATH}/split_0.json"
 DOWNLOAD_BATCHES_PATH = "data/intermediate/download_batches"
 DOWNLOAD_IMAGES_PER_LOCATION = 5
-DOWNLOAD_VERTICAL_FOV = 84.85  # gives panorama 2200px wide, 79.9 would give 2400px wide panorama
+DOWNLOAD_VERTICAL_FOV = 84.85  # for height 640px, gives panorama wide 2200px, 79.9° would give 2400px wide panorama
 DOWNLOAD_BATCH_SIZE = 10_000
 DOWNLOAD_IMAGE_HEIGHT = 640
 
-# Batch download parameters
+# Parameters for downloading single batch
 DOWNLOAD_BATCH_FILE_PATH = f"{DOWNLOAD_BATCHES_PATH}/batch_0.json"
 DOWNLOAD_LOG_PATH = f"data/intermediate"
 DOWNLOAD_FOLDER_PATH = "data/raw"
