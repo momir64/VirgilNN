@@ -5,6 +5,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
+# Google Street View API parameters
 API_KEY = os.getenv("GOOGLE_API_KEY")
 STREETVIEW_API_URL = "https://maps.googleapis.com/maps/api/streetview"
 
@@ -55,3 +56,10 @@ DOWNLOAD_FOLDER_PATH = "data/raw"
 MAX_REQUESTS_PER_MINUTE = 25000
 CONCURRENT_DOWNLOADS = 1000
 CHUNK_SIZE = 16 * 1024
+
+# Parameters for plotting the map
+PROJECTION_TYPE = "EPSG:4326" if False else "EPSG:3035"
+PLOT_LOCATIONS_PATH = ALL_LOCATIONS_PATH
+ENUMERATE_CELLS = True
+LOAD_LOCATIONS = False
+FIG_SIZE = (9, 8)
