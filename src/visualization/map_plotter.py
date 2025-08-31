@@ -24,8 +24,9 @@ if __name__ == "__main__":
     if ENUMERATE_CELLS:
         for idx, row in grid.iterrows():
             x, y = row["geometry"].centroid.x, row["geometry"].centroid.y
-            ax.text(x, y, str(idx + 1), ha="center", va="center", fontsize=9, color="green")
+            ax.text(x, y, str(idx + 1), ha="center", va="center", fontsize=9, color="red")
 
+    ax.set_facecolor("lightskyblue")
     ax.set_aspect("auto")
     plt.title(f"Europe")
     plt.show()

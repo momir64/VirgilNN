@@ -13,21 +13,17 @@ STREETVIEW_API_URL = "https://maps.googleapis.com/maps/api/streetview"
 COUNTRIES_PATH = "data/external/countries.zip"
 EUROPE_PATH = "data/intermediate/europe.gpkg"
 GRID_PATH = "data/intermediate/grid.gpkg"
-BOUNDARIES = (-25, 34, 35, 63.5)  # latitude and longitude degrees
-CELL_SIZE = 200_000  # 200.000 m = 200 km
-MIN_AREA = 1e10  # 1×10¹⁰ m² = 10_000 km²
+BOUNDARIES = (-25, 34, 35, 63)  # latitude and longitude degrees
+CELL_SIZE = 180_000  # 180.000 m = 180 km
+MIN_AREA = 9e9  # 11×10⁹ m² = 11_000 km²
+GRID_OFFSET_X = 20_000
+GRID_OFFSET_Y = 20_000
 EXCLUDE_COUNTRIES = [
-    "Belarus", "Bulgaria", "Estonia", "Finland",
-    "Iceland", "Latvia", "Lithuania", "Moldova",
-    "Poland", "Romania", "Russia", "Ukraine"
+    "Albania", "Belarus", "Bosnia and Herz.", "Bulgaria",
+    "Estonia", "Finland", "Greece", "Iceland", "Latvia",
+    "Lithuania", "Moldova", "Montenegro", "North Macedonia",
+    "Poland", "Romania", "Russia", "Serbia", "Ukraine"
 ]
-# Without balkan
-# EXCLUDE_COUNTRIES = [
-#     "Albania", "Belarus", "Bosnia and Herz.", "Bulgaria", "Croatia",
-#     "Estonia", "Finland", "Greece", "Hungary", "Iceland", "Latvia",
-#     "Lithuania", "Moldova", "Montenegro", "North Macedonia", "Poland",
-#     "Romania", "Russia", "Serbia", "Slovakia", "Ukraine"
-# ]
 
 # Parameters for generating locations
 ALL_LOCATIONS_PATH = "data/intermediate/all_locations.json"
@@ -58,8 +54,8 @@ CONCURRENT_DOWNLOADS = 1000
 CHUNK_SIZE = 16 * 1024
 
 # Parameters for plotting the map
-PROJECTION_TYPE = "EPSG:4326" if False else "EPSG:3035"
+PROJECTION_TYPE = "EPSG:3035"  # "EPSG:3035" preserves area, while "EPSG:4326" uses longitude and latitude
 PLOT_LOCATIONS_PATH = ALL_LOCATIONS_PATH
-ENUMERATE_CELLS = True
-LOAD_LOCATIONS = False
+ENUMERATE_CELLS = False
+LOAD_LOCATIONS = True
 FIG_SIZE = (9, 8)

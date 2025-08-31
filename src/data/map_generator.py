@@ -15,8 +15,9 @@ if __name__ == "__main__":
 
     grid_cells = []
     minx, miny, maxx, maxy = europe.total_bounds
-    for x in list(range(int(minx), int(maxx) + CELL_SIZE, CELL_SIZE)):
-        for y in list(range(int(miny), int(maxy) + CELL_SIZE, CELL_SIZE)):
+    GRID_OFFSET_X, GRID_OFFSET_Y = GRID_OFFSET_X % CELL_SIZE, GRID_OFFSET_Y % CELL_SIZE
+    for x in list(range(int(minx - CELL_SIZE + GRID_OFFSET_X), int(maxx) + CELL_SIZE, CELL_SIZE)):
+        for y in list(range(int(miny - CELL_SIZE + GRID_OFFSET_Y), int(maxy) + CELL_SIZE, CELL_SIZE)):
             grid_cells.append(box(x, y, x + CELL_SIZE, y + CELL_SIZE))
 
     grid = gpd.GeoDataFrame(geometry=grid_cells, crs=europe.crs)
@@ -28,15 +29,14 @@ if __name__ == "__main__":
     while len(small_idx) > 0:
         for idx in small_idx:
             geom = grid.loc[idx, "geometry"]
-            neighbors = grid[grid.geometry.touches(geom) & (grid.index != idx)]
+            neighbors = grid[grid.geometry.touches(geom) & (grid.index != idx)].copy()
             if not neighbors.empty:
-                border_lengths = neighbors.geometry.apply(lambda nbr: nbr.boundary.intersection(geom.boundary).length)
-                longest_border_idx = border_lengths.idxmax()
-                # check if the combined size isn"t larger than normal grid cell
-                if grid.at[longest_border_idx, "geometry"].union(geom).area <= CELL_SIZE ** 2:
-                    merge_idx = longest_border_idx  # if it"s not, use neighbor with the largest shared border for merge
-                else:
-                    merge_idx = neighbors.geometry.area.idxmin()  # if it is, use the smallest neighbour for merge
+                neighbors["border"] = neighbors.geometry.apply(lambda n: n.boundary.intersection(geom.boundary).length)
+                neighbors = neighbors[neighbors["border"] > 0]
+            if not neighbors.empty:
+                neighbors["centroid_dist"] = neighbors.geometry.centroid.distance(geom.centroid)
+                closest_neighbors = neighbors[neighbors["centroid_dist"] < neighbors["centroid_dist"].min() * 1.1]
+                merge_idx = closest_neighbors.geometry.area.idxmin()
                 grid.at[merge_idx, "geometry"] = unary_union([grid.at[merge_idx, "geometry"], geom])
                 grid = grid.drop(idx)
         small_idx = grid[grid.area < MIN_AREA].index
