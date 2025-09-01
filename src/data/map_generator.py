@@ -3,7 +3,8 @@ from shapely.geometry import box
 from configs.settings import *
 import geopandas as gpd
 
-if __name__ == "__main__":
+
+def main():
     world = gpd.read_file(COUNTRIES_PATH)
     countries = world[(world["CONTINENT"] == "Europe") & (~world["NAME"].isin(EXCLUDE_COUNTRIES))].copy()
     countries["geometry"] = countries["geometry"].intersection(box(*BOUNDARIES))
@@ -44,3 +45,7 @@ if __name__ == "__main__":
 
     europe.to_file(EUROPE_PATH, driver="GPKG")
     grid.to_file(GRID_PATH, driver="GPKG")
+
+
+if __name__ == "__main__":
+    main()

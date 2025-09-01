@@ -4,7 +4,8 @@ from shapely import Point
 import geopandas as gpd
 import json
 
-if __name__ == "__main__":
+
+def main():
     europe = gpd.read_file(EUROPE_PATH).to_crs(PROJECTION_TYPE)
     grid = gpd.read_file(GRID_PATH).to_crs(PROJECTION_TYPE)
 
@@ -30,3 +31,7 @@ if __name__ == "__main__":
     ax.set_aspect("auto")
     plt.title(f"Europe")
     plt.show()
+
+
+if __name__ == "__main__":
+    main()

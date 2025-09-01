@@ -85,7 +85,11 @@ async def generate_locations():
     return locations
 
 
-if __name__ == "__main__":
+def main():
     locations_per_cell = asyncio.run(generate_locations())
     save_locations(locations_per_cell, ALL_LOCATIONS_PATH)
     print(f"Locations saved in {ALL_LOCATIONS_PATH}")
+
+
+if __name__ == "__main__":
+    main()

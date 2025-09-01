@@ -4,7 +4,8 @@ from configs.settings import *
 import shutil
 import json
 
-if __name__ == "__main__":
+
+def main():
     with open(ALL_LOCATIONS_PATH) as file:
         grouped_locations = json.load(file)
         split_grouped_locations = defaultdict(dict)
@@ -18,3 +19,7 @@ if __name__ == "__main__":
         shutil.rmtree(SPLIT_FOLDER_PATH)
         for split, grouped_locations in split_grouped_locations.items():
             save_locations(grouped_locations, f"{SPLIT_FOLDER_PATH}/split_{split}.json")
+
+
+if __name__ == "__main__":
+    main()

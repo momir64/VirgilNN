@@ -3,7 +3,7 @@ from src.data.utils import *
 import json
 
 
-if __name__ == "__main__":
+def main():
     ok_ids = set()
     with open(RECOVER_LOG_PATH, "r") as file:
         for line in file:
@@ -17,3 +17,7 @@ if __name__ == "__main__":
     filtered_requests = [entry for entry in data if entry["request_id"] not in ok_ids]
     batch_name = os.path.splitext(os.path.basename(RECOVER_BATCH_PATH.rstrip('/\\')))[0]
     save_batch(filtered_requests, f"{DOWNLOAD_BATCHES_PATH}/recover_{batch_name}.json")
+
+
+if __name__ == "__main__":
+    main()
