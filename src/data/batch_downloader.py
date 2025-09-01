@@ -7,11 +7,15 @@ import json
 import os
 
 limiter = AsyncLimiter(MAX_REQUESTS_PER_MINUTE, 60)
+stop_event = asyncio.Event()
 log_lock = asyncio.Lock()
 
 
 async def download_image(session, request, output_dir, log_path):
     async with limiter:
+        if stop_event.is_set():
+            return
+
         params = {
             "key": API_KEY,
             "location": request["location"],
@@ -35,12 +39,14 @@ async def download_image(session, request, output_dir, log_path):
                         async with aio_open(log_path, "a") as log_file:
                             await log_file.write(f"{request['request_id']} OK {filename}\n")
                 else:
+                    stop_event.set()
                     print(f"Failed request {request['request_id']}: {response.status}")
                     text = await response.text()
                     async with log_lock:
                         async with aio_open(log_path, "a") as log_file:
                             await log_file.write(f"{request.get('request_id')} ERROR {response.status} {text}\n")
         except Exception as e:
+            stop_event.set()
             print(f"Error downloading request {request['request_id']}: {e}")
             async with log_lock:
                 async with aio_open(log_path, "a") as log_file:
