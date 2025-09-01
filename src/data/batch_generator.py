@@ -1,5 +1,5 @@
-from src.data.utils import chunk_list
 from configs.settings import *
+from src.data.utils import *
 import shutil
 import random
 import json
@@ -31,12 +31,7 @@ if __name__ == "__main__":
 
     os.makedirs(DOWNLOAD_BATCHES_PATH, exist_ok=True)
     shutil.rmtree(DOWNLOAD_BATCHES_PATH)
+    os.makedirs(DOWNLOAD_BATCHES_PATH, exist_ok=True)
     for i, batch in enumerate(chunk_list(download_items, DOWNLOAD_BATCH_SIZE)):
         file_path = f"{DOWNLOAD_BATCHES_PATH}/batch_{i}.json"
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, "w") as file:
-            json_str = json.dumps(batch)
-            json_str = json_str.replace("}, {", "},\n  {")
-            json_str = json_str.replace("[", "[\n  ")
-            json_str = json_str.replace("]", "  \n]")
-            file.write(json_str)
+        save_batch(batch, file_path)

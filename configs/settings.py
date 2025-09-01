@@ -46,12 +46,16 @@ DOWNLOAD_BATCH_SIZE = 10_000
 DOWNLOAD_IMAGE_HEIGHT = 640
 
 # Parameters for downloading single batch
-DOWNLOAD_BATCH_FILE_PATH = f"{DOWNLOAD_BATCHES_PATH}/batch_0.json"
+DOWNLOAD_BATCH_FILE_PATH = f"{DOWNLOAD_BATCHES_PATH}/batch_5.json"
 DOWNLOAD_LOG_PATH = f"data/intermediate"
 DOWNLOAD_FOLDER_PATH = "data/raw"
 MAX_REQUESTS_PER_MINUTE = 25000
 CONCURRENT_DOWNLOADS = 1000
 CHUNK_SIZE = 16 * 1024
+
+# Parameters for cleaning batch file using log file
+RECOVER_BATCH_PATH = f"{DOWNLOAD_BATCHES_PATH}/batch_4.json"
+RECOVER_LOG_PATH = f"{DOWNLOAD_LOG_PATH}/download_batch_4.log"
 
 # Parameters for plotting the map
 PROJECTION_TYPE = "EPSG:3035"  # "EPSG:3035" preserves area, while "EPSG:4326" uses longitude and latitude
