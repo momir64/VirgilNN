@@ -16,9 +16,9 @@ def main():
 
     grid_cells = []
     minx, miny, maxx, maxy = europe.total_bounds
-    GRID_OFFSET_X, GRID_OFFSET_Y = GRID_OFFSET_X % CELL_SIZE, GRID_OFFSET_Y % CELL_SIZE
-    for x in list(range(int(minx - CELL_SIZE + GRID_OFFSET_X), int(maxx) + CELL_SIZE, CELL_SIZE)):
-        for y in list(range(int(miny - CELL_SIZE + GRID_OFFSET_Y), int(maxy) + CELL_SIZE, CELL_SIZE)):
+    x_offset, y_offset = GRID_OFFSET_X % CELL_SIZE, GRID_OFFSET_Y % CELL_SIZE
+    for x in list(range(int(minx - CELL_SIZE + x_offset), int(maxx) + CELL_SIZE, CELL_SIZE)):
+        for y in list(range(int(miny - CELL_SIZE + y_offset), int(maxy) + CELL_SIZE, CELL_SIZE)):
             grid_cells.append(box(x, y, x + CELL_SIZE, y + CELL_SIZE))
 
     grid = gpd.GeoDataFrame(geometry=grid_cells, crs=europe.crs)
