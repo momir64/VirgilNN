@@ -27,8 +27,10 @@ def main():
             x, y = row["geometry"].centroid.x, row["geometry"].centroid.y
             ax.text(x, y, str(idx + 1), ha="center", va="center", fontsize=9, color="red")
 
+    if not KEEP_ASPECT_RATIO:
+        ax.set_aspect("auto")
+
     ax.set_facecolor("lightskyblue")
-    ax.set_aspect("auto")
     plt.title(f"Europe")
     plt.show()
 

@@ -61,6 +61,7 @@ RECOVER_LOG_PATH = f"{DOWNLOAD_LOG_PATH}/download_batch_4.log"
 # Parameters for plotting the map
 PROJECTION_TYPE = "EPSG:3035"  # "EPSG:3035" preserves area, while "EPSG:4326" uses longitude and latitude
 PLOT_LOCATIONS_PATH = ALL_LOCATIONS_PATH
+KEEP_ASPECT_RATIO = True
 ENUMERATE_CELLS = False
 LOAD_LOCATIONS = True
-FIG_SIZE = (9, 8)
+FIG_SIZE = (8, 8)
