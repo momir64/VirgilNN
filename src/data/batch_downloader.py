@@ -1,9 +1,13 @@
 from aiofiles import open as aio_open
 from aiolimiter import AsyncLimiter
 from configs.settings import *
+import urllib.parse
 import asyncio
 import aiohttp
+import hashlib
+import base64
 import json
+import hmac
 import os
 
 limiter = AsyncLimiter(MAX_REQUESTS_PER_MINUTE, 60)
@@ -11,13 +15,24 @@ stop_event = asyncio.Event()
 log_lock = asyncio.Lock()
 
 
+def generate_signed_params(request):
+    keys = ["location", "heading", "pitch", "fov", "size"]
+    params = {"key": API_KEY, **{key: request[key] for key in keys}}
+    query_string = urllib.parse.urlencode(params).replace('%2C', ',')
+    url_to_sign = f"{urllib.parse.urlparse(STREETVIEW_API_URL).path}?{query_string}"
+    decoded_secret = base64.urlsafe_b64decode(API_SECRET)
+    signature = hmac.new(decoded_secret, url_to_sign.encode(), hashlib.sha1)
+    params["signature"] = base64.urlsafe_b64encode(signature.digest()).decode()
+    return params
+
+
 async def download_image(session, request, output_dir, log_path):
     async with limiter:
+        params = generate_signed_params(request)
+
         if stop_event.is_set():
             return
 
-        keys = ["location", "heading", "pitch", "fov", "size", "signature"]
-        params = {"key": API_KEY, **{key: request[key] for key in keys}}
         try:
             async with session.get(STREETVIEW_API_URL, params=params) as response:
                 if response.status == 200:
