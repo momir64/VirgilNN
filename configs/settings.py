@@ -7,6 +7,7 @@ load_dotenv(BASE_DIR / ".env")
 
 # Google Street View API parameters
 API_KEY = os.getenv("GOOGLE_API_KEY")
+API_SECRET = os.getenv("GOOGLE_API_SECRET")
 STREETVIEW_API_URL = "https://maps.googleapis.com/maps/api/streetview"
 
 # Parameters for generating the map
@@ -38,7 +39,7 @@ SPLIT_FOLDER_PATH = "data/intermediate/split_locations"
 SPLIT_LOCATIONS_PER_CELL = 100
 
 # Parameters for preparations of download batches
-DOWNLOAD_LOCATIONS_PATH = f"{SPLIT_FOLDER_PATH}/split_0.json"
+DOWNLOAD_LOCATIONS_PATH = f"{SPLIT_FOLDER_PATH}/split_1.json"
 DOWNLOAD_BATCHES_PATH = "data/intermediate/download_batches"
 DOWNLOAD_IMAGES_PER_LOCATION = 5
 DOWNLOAD_VERTICAL_FOV = 82.3187  # for height 640px, gives panorama wide 2300px, 79.9° would give 2400px wide panorama
@@ -46,8 +47,8 @@ DOWNLOAD_BATCH_SIZE = 10_000
 DOWNLOAD_IMAGE_HEIGHT = 640
 
 # Parameters for downloading single batch
-DOWNLOAD_BATCH_FILE_PATH = f"{DOWNLOAD_BATCHES_PATH}/batch_5.json"
-DOWNLOAD_LOG_PATH = f"data/intermediate"
+DOWNLOAD_BATCH_FILE_PATH = f"{DOWNLOAD_BATCHES_PATH}/batch_1.json"
+DOWNLOAD_LOG_PATH = f"data/intermediate/logs"
 DOWNLOAD_FOLDER_PATH = "data/raw"
 MAX_REQUESTS_PER_MINUTE = 25000
 CONCURRENT_DOWNLOADS = 1000

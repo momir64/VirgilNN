@@ -16,7 +16,7 @@ async def download_image(session, request, output_dir, log_path):
         if stop_event.is_set():
             return
 
-        keys = ["location", "heading", "pitch", "fov", "size"]
+        keys = ["location", "heading", "pitch", "fov", "size", "signature"]
         params = {"key": API_KEY, **{key: request[key] for key in keys}}
         try:
             async with session.get(STREETVIEW_API_URL, params=params) as response:
